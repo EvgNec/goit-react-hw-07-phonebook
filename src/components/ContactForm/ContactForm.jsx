@@ -1,14 +1,30 @@
 import { Input, AddButton, Form, Title } from './ContactForm.styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
+import Notiflix from 'notiflix';
 
 const ContactForm = () => {
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
+  console.log('contacts', contacts);
 
   const handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = e.target;
-    dispatch(addContact(name.value, number.value));
+    const form = e.target;
+    const name = form.name.value;
+    console.log('name', name);
+    const number = form.number.value;
+    console.log('number', number);
+    if (contacts.find(existingContact => existingContact.name === name)) {
+      Notiflix.Notify.failure(`${name} is already in your contacts`);
+      return;
+    } else {
+      dispatch(addContact(name, number));
+      Notiflix.Notify.success(
+        `${name} has been successfully added to  your phonebook`
+      );
+    }
     e.target.reset();
   };
 

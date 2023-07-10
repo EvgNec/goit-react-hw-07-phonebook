@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
-import Notiflix from 'notiflix';
 import initContacts from '../services/contacts.json';
 
 export const contactsSlice = createSlice({
@@ -11,33 +10,18 @@ export const contactsSlice = createSlice({
   reducers: {
     addContact: {
       reducer(state, action) {
-        if (
-          state.contacts.find(
-            existingContact => existingContact.name === action.payload.name
-          )
-        ) {
-          Notiflix.Notify.failure(
-            `${action.payload.name} is already in your contacts`
-          );
-        } else {
-          state.contacts.unshift(action.payload);
-
-          Notiflix.Notify.success(
-            `${action.payload.name} has been successfully added to  your phonebook`
-          );
-        }
+        state.contacts.unshift(action.payload);
       },
       prepare(name, number) {
         return {
           payload: {
-            name,
-            number,
             id: nanoid(),
+            name: name,
+            number: number,
           },
         };
       },
     },
-
     deleteContact(state, action) {
       state.contacts = state.contacts.filter(
         contact => contact.id !== action.payload
