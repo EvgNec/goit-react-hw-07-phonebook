@@ -1,29 +1,23 @@
 import { Input, AddButton, Form, Title } from './ContactForm.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/operation';
+import { useSelector } from 'react-redux';
+import { selectContacts } from 'redux/selectors';
 import Notiflix from 'notiflix';
 
 const ContactForm = () => {
-  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
-  console.log('contacts', contacts);
+  const contacts = useSelector(selectContacts);
 
   const handleSubmit = e => {
     e.preventDefault();
-    const form = e.target;
-    const name = form.name.value;
-    console.log('name', name);
-    const number = form.number.value;
-    console.log('number', number);
-    if (contacts.find(existingContact => existingContact.name === name)) {
-      Notiflix.Notify.failure(`${name} is already in your contacts`);
-      return;
+    const { name, phone } = e.target;
+    const contact = { name: name.value, phone: phone.value };
+
+    if (contacts.find(existingContact => existingContact.name === name.value)) {
+      Notiflix.Notify.failure(`${contact.name} is already in your contacts`);
     } else {
-      dispatch(addContact(name, number));
-      Notiflix.Notify.success(
-        `${name} has been successfully added to  your phonebook`
-      );
+      dispatch(addContact(contact));
     }
     e.target.reset();
   };
@@ -42,13 +36,15 @@ const ContactForm = () => {
         />
         <Input
           type="tel"
-          name="number"
+          name="phone"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
           placeholder="Number"
         />
-        <AddButton type="submit">Add contacts</AddButton>
+        <AddButton type="submit">
+          <span>Add contacts </span>
+        </AddButton>
       </Form>
     </>
   );
