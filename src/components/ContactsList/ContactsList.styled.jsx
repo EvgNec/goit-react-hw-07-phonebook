@@ -12,7 +12,7 @@ export const ListItem = styled.li`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 5px groove #73dbeb;
+  border-bottom: 5px groove #0099FF;
   padding: 10px 0;
 `;
 
